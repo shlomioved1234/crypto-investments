@@ -1,0 +1,71 @@
+
+<html>
+<style>
+    header { border-bottom: 1px solid #000; }
+    header > h1 { display: inline-block; }
+    header span { margin-left: 100px; }
+
+    input[type=text] {
+        width: 130px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: white;
+        background-image: url('searchicon.png');
+        background-position: 10px 10px;
+        background-repeat: no-repeat;
+        padding: 12px 12px 12px 12px;
+        -webkit-transition: width 0.2s ease-in-out;
+        transition: width 0.2s ease-in-out;
+    }
+
+input[type=text]:focus {
+    width: 95%;
+}
+
+table, th, td {
+    border: 10px solid #ADD8E6;
+    background-color: #C0C0C0
+    padding: 15px;
+    text-align: center;
+    font-size: 150%
+}
+.greentext{
+    color: green;
+}
+.redtext{
+    color: red;
+}
+</style>
+
+    <head>
+        <title>Welcome To CryptoInvestments</title>
+        <header>
+            <h1>CryptoCurrency Index</h1>
+        </header>
+    </head>
+    <body style="background-color: #C0C0C0";>
+
+    <form action="" method="POST" name="search">
+        <br>
+        <input type="text" name="search" placeholder="Search CryptoCurrency..">
+        <input type="submit" value="Submit">
+    </form>
+    
+    <p>
+    <h1>About Us</h1>
+        <h2>Using our expertise of the latest technologies in Sentiment Analysis, CryptoCurrency Investing, and Artificial Intelligence Prediction and Analysis. <br> Our state of the art classifiers natural language processors take data from various Social Media and News Sources, aggregate the data, and analyze them on a per cryptocurrency basis compared with historical prices to give an accurate prediction of where the market will go and whether you should invest.
+        </h2>
+    </p>
+    
+</body>
+
+<p align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </p>
+{% block content %}{% endblock %}
+</html>
+
+
+
+
+

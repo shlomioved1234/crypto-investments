@@ -1,0 +1,91 @@
+<!-- Text for Index Page -->
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+        input[type=text] {
+            width: 130px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+            background-image: url('searchicon.png');
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            padding: 12px 12px 12px 12px;
+            -webkit-transition: width 0.2s ease-in-out;
+            transition: width 0.2s ease-in-out;
+        }
+
+    input[type=text]:focus {
+        width: 95%;
+    }
+
+    table, th, td {
+        border: 10px solid #ADD8E6;
+        background-color: #C0C0C0
+        padding: 15px;
+        text-align: center;
+        font-size: 150%
+    }
+    .greentext{
+        color: green;
+    }
+    .redtext{
+        color: red;
+    }
+</style>
+
+
+
+</head>
+<body>
+    
+
+    <form action="" method="POST" name="search">
+        <br>
+        <input type="text" name="search" placeholder="Search CryptoCurrency..">
+            <input type="submit" value="Submit">
+    </form>
+    
+    <table align= "center", style="width:80%">
+        
+        <tr>
+            <th>CryptoCurrency</th>
+            <th>Ticker</th>
+            <th>Price</th>
+            <th>Price Change</th>
+            <th>Sentiment Analysis</th>
+        </tr>
+        {% set minus = "-" %}
+        {% for result in results %}
+        <TR>
+            <td><a href="{{result[0]}}">{{result[0]}}</a></td>
+            <td>{{result[1][0]}}</td>
+            <td>{{result[1][1]}}</td>
+            {% if result[1][2][0] == minus %}
+            <td class= "redtext"> {{result[1][2]}}%</td>
+            {% else %}
+            <td class= "greentext"> +{{result[1][2]}}%</td>
+            {% endif %}
+            <td> +0.68 </td>
+        </TR>
+
+        {% endfor %}
+        
+
+    </table>
+
+
+    
+    <br>
+    <br>
+    
+    
+    
+    <p align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </p>
+{% endblock %}
+
+

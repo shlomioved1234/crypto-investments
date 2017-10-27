@@ -1,0 +1,24 @@
+<!-- Creates Title Along with Links to Each Page in Site -->
+
+<style>
+header { border-bottom: 1px solid #000; }
+header > h1 { display: inline-block; }
+header span { margin-left: 100px; }
+</style>
+
+<html>
+  <head>
+    <title>Welcome To CryptoInvestments</title>
+    <header>
+    <h1>CryptoCurrency Index</h1> <!--<span>CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> </span>-->
+    </header>
+  </head>
+  <body style="background-color: #C0C0C0";>
+
+      {% block content %}{% endblock %}
+    <hr>
+  </body>
+</html>
+
+
+
