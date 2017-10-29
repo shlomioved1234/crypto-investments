@@ -44,3 +44,7 @@ def contact():
     return render_template('contact.html', title='Contact Us')
 
 
+@app.route('/careers')
+@app.route('/careers/')
+def careers():
+    return render_template('careers.html', title='Careers')
