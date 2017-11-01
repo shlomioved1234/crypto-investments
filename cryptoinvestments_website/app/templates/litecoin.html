@@ -1,0 +1,94 @@
+<html>
+    <style>
+        header { border-bottom: 1px solid #000; }
+        header > h1 { display: inline-block; }
+        header span { margin-left: 100px; }
+        
+        input[type=text] {
+            width: 130px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+            background-image: url('searchicon.png');
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            padding: 12px 12px 12px 12px;
+            -webkit-transition: width 0.2s ease-in-out;
+            transition: width 0.2s ease-in-out;
+        }
+    
+    input[type=text]:focus {
+        width: 95%;
+    }
+    
+    table, th, td {
+        border: 10px solid #ADD8E6;
+        background-color: #C0C0C0
+        padding: 15px;
+        text-align: center;
+        font-size: 150%
+    }
+    .greentext{
+        color: green;
+    }
+    .redtext{
+        color: red;
+    }
+    </style>
+    
+    <head>
+        <title>Welcome To CryptoInvestments</title>
+        <header>
+            <h1>Litecoin Index</h1>
+        </header>
+    </head>
+    <body style="background-color: #C0C0C0";>
+        
+        <form action="" method="POST" name="search">
+            <br>
+            <input type="text" name="search" placeholder="Search CryptoCurrency..">
+                <input type="submit" value="Submit">
+                    </form>
+        <table align= "center", style="width:80%">
+            {% block content %}
+            <tr>
+                <th>CryptoCurrency</th>
+                <th>Ticker</th>
+                <th>Price</th>
+                <th>Price Change</th>
+            </tr>
+            {% set minus = "-" %}
+            {% for result in results %}
+            <tr>
+                <td>{{result[0]}}</td>
+                <td>{{result[1][0]}}</td>
+                <td>{{result[1][1]}}</td>
+                {% if result[1][2][0] == minus %}
+                <td class= "redtext"> {{result[1][2]}}%</td>
+                {% else %}
+                <td class= "greentext"> +{{result[1][2]}}%</td>
+                {% endif %}
+            </tr>
+        </table>
+        
+        <table align= "center", style="width:80%">
+            <tr>
+                <td>
+                    Graph of {{result[0]}} Prices (3 Months)
+                </td>
+                <td>
+                    Graph of {{result[0]}} Sentiment (3 Months)
+                </td>
+            </tr>
+            </tr>
+            <td>
+                <img src="{{url_for('static', filename='bitcoin.png')}} alt="Image Placeholder" height="1000"/>
+                    </td>
+                    </tr>
+                    
+                    </table>
+                    {% endfor %}
+                    <p align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </p>
+                    {% endblock %}
