@@ -9,11 +9,10 @@ from pathlib import Path
 import collections
 from io import StringIO
 import matplotlib.pyplot as plt
-from flask import Flask, make_response, send_file, render_template, url_for, g
+from flask import Flask, make_response, send_file, render_template, url_for
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
-from forms import SearchForm
-import config
+
 
 def prices_for_graph(symbol, limit, aggregate):
     r= requests.get('https://min-api.cryptocompare.com/data/histoday?fsym='+ str(symbol) + '&tsym=USD&limit=' +str(limit) + '&aggregate='+ str(aggregate)+ '&e=CCCAGG')
