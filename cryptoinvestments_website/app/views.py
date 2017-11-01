@@ -9,9 +9,11 @@ from pathlib import Path
 import collections
 from io import StringIO
 import matplotlib.pyplot as plt
-from flask import Flask, make_response, send_file, render_template, url_for
+from flask import Flask, make_response, send_file, render_template, url_for, g
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+from forms import SearchForm
+import config
 
 def prices_for_graph(symbol, limit, aggregate):
     r= requests.get('https://min-api.cryptocompare.com/data/histoday?fsym='+ str(symbol) + '&tsym=USD&limit=' +str(limit) + '&aggregate='+ str(aggregate)+ '&e=CCCAGG')
@@ -51,13 +53,14 @@ def get_prices(symbols, namesOfCurrency):
         i+=1
     return(list(results.items()))
 
-@app.route('/')
-@app.route('/index')
-@app.route('/index/')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+@app.route('/index/', methods=['GET', 'POST'])
 def index():
     results= get_prices(['BTC', 'ETH', 'LTC', 'ETC', 'BCC', 'ZEC', 'XRP', 'NEO', 'DASH', 'IOTA'], ['Bitcoin', 'Ethereum', 'Litecoin', 'Ethereum Classic', 'Bitcoin Cash', 'Zcash' ,'Ripple', 'Neo', 'Dash', 'IOTA']
 )
     return render_template('index.html', results=results)
+
 
 @app.route('/about')
 @app.route('/about/')
@@ -171,6 +174,9 @@ def iota():
     results= get_prices(['IOTA'],['IOTA'])
     turn_prices_to_graph('IOTA', 90, 1,'app/static/iota.png')
     return render_template('iota.html', results = results)
+
+
+
 
 
 '''
