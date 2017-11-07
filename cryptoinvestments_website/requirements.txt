@@ -22,8 +22,11 @@ itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
 matplotlib==2.1.0
+nltk==3.2.5
 numpy==1.13.3
 pbr==3.1.1
+praw==5.2.0
+prawcore==0.12.0
 pyparsing==2.2.0
 python-dateutil==2.6.1
 python3-openid==3.1.0
@@ -34,6 +37,8 @@ SQLAlchemy==1.1.14
 sqlalchemy-migrate==0.11.0
 sqlparse==0.2.3
 Tempita==0.5.2
+textblob==0.13.0
+update-checker==0.16
 urllib3==1.22
 Werkzeug==0.12.2
 Whoosh==2.7.4

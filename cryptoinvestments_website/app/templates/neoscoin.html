@@ -41,7 +41,7 @@
     <head>
         <title>Welcome To CryptoInvestments</title>
         <header>
-            <h1>Bitcoin Cash Index</h1>
+            <h1>Neoscoin Index</h1>
         </header>
         <h2 align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </h2>
     </head>
@@ -53,27 +53,27 @@
                 <input type="submit" value="Submit">
                     </form>
         <table align= "center", style="width:80%">
-            {% block content %}
-            <tr>
-                <th>CryptoCurrency</th>
-                <th>Ticker</th>
-                <th>Price</th>
-                <th>Price Change</th>
-                <th>Market Cap</th>
-            </tr>
-            {% set minus = "-" %}
-            {% for key, value in results %}
-            <tr>
-                <td>{{key}}</td>
-                <td>{{value['name']}}</td>
-                <td>{{value['price']}}</td>
-                {% if value['percentchange'][0] == minus %}
-                <td class= "redtext"> {{value['percentchange']}}%</td>
-                {% else %}
-                <td class= "greentext"> +{{value['percentchange']}}%</td>
-                {% endif %}
-                <td>{{value['marketcap']}}</td>
-            </tr>
+{% block content %}
+<tr>
+    <th>CryptoCurrency</th>
+    <th>Ticker</th>
+    <th>Price</th>
+    <th>Price Change</th>
+    <th>Market Cap</th>
+</tr>
+{% set minus = "-" %}
+{% for key, value in results %}
+<tr>
+    <td>{{key}}</td>
+    <td>{{value['name']}}</td>
+    <td>{{value['price']}}</td>
+    {% if value['percentchange'][0] == minus %}
+    <td class= "redtext"> {{value['percentchange']}}%</td>
+    {% else %}
+    <td class= "greentext"> +{{value['percentchange']}}%</td>
+    {% endif %}
+    <td>{{value['marketcap']}}</td>
+</tr>
         </table>
         
         <table align= "center", style="width:80%">
@@ -86,12 +86,13 @@
                 </td>
             </tr>
             </tr>
-            <td>
-                <img src="{{url_for('static', filename='bitcoin.png')}} alt="Image Placeholder" height="1000"/>
-                    </td>
-                    </tr>
-                    
-                    </table>
-                    {% endfor %}
-                    <p align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </p>
-                    {% endblock %}
+            <td>                    <img src="{{url_for('static', filename='bitcoin.png')}} alt="Image Placeholder" height="1000"/>
+                </td>
+            </tr>
+            
+            </table>
+            {% endfor %}
+            <p align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </p>
+            {% endblock %}
+
+
