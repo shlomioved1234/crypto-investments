@@ -1,0 +1,101 @@
+<html>
+    <style>
+        header { border-bottom: 1px solid #000; }
+        header > h1 { display: inline-block; }
+        header span { margin-left: 100px; }
+        
+        input[type=text] {
+            width: 130px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+            background-image: url('searchicon.png');
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            padding: 12px 12px 12px 12px;
+            -webkit-transition: width 0.2s ease-in-out;
+            transition: width 0.2s ease-in-out;
+        }
+    
+    input[type=text]:focus {
+        width: 95%;
+    }
+    
+    table, th, td {
+        border: 10px solid #ADD8E6;
+        background-color: #C0C0C0
+        padding: 15px;
+        text-align: center;
+        font-size: 150%
+    }
+    .greentext{
+        color: green;
+    }
+    .redtext{
+        color: red;
+    }
+    td img {
+        max-width:100%;
+        height:auto;
+    }
+    </style>
+    
+    <head>
+        <title>Welcome To CryptoInvestments</title>
+        <header>
+            <h1>Bancor Network Token Index</h1>
+        </header>
+        <h2 align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </h2>
+    </head>
+    <body style="background-color: #C0C0C0";>
+        
+            <form action="/search" method="POST" name="search">
+            <br>
+            <input type="text" name="search" placeholder="Search CryptoCurrency..">
+                <input type="submit" value="Submit">
+                    </form>
+        <table align= "center", style="width:80%">
+            {% block content %}
+            <tr>
+                <th>CryptoCurrency</th>
+                <th>Ticker</th>
+                <th>Price</th>
+                <th>Price Change</th>
+                <th>Market Cap</th>
+            </tr>
+            {% set minus = "-" %}
+            {% for key, value in results %}
+            <tr>
+                <td>{{key}}</td>
+                <td>{{value['name']}}</td>
+                <td>{{value['price']}}</td>
+                {% if value['percentchange'][0] == minus %}
+                <td class= "redtext"> {{value['percentchange']}}%</td>
+                {% else %}
+                <td class= "greentext"> +{{value['percentchange']}}%</td>
+                {% endif %}
+                <td>{{value['marketcap']}}</td>
+            </tr>
+        </table>
+        
+        <table align= "center", style="width:80%">
+            <tr>
+                <td>
+                    Graph of {{key}} Prices (3 Months)
+                </td>
+                <td>
+                    Graph of {{key}} Sentiment (3 Months)
+                </td>
+            </tr>
+            </tr>
+            <td>
+                <img src="{{url_for('static', filename='bancornetworktoken.png')}}" alt="Image Placeholder" height="200"/>
+                    </td>
+                    </tr>
+                    
+                    </table>
+                    {% endfor %}
+                    <p align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </p>
+                    {% endblock %}

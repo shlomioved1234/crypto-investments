@@ -1,21 +1,39 @@
 from app import app
-from app import static
+import os.path
+#from app import static
 import requests
 import codecs
 import json
 import datetime
 import time
-from pathlib import Path
+#from pathlib import Path
 import collections
 from io import StringIO
 import matplotlib.pyplot as plt
-from flask import Flask, make_response, send_file, render_template, url_for
+from flask import Flask, make_response, send_file, render_template, url_for, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
-#import praw
-#from textblob import TextBlob
+import numpy as np
 '''
-def get_comments_and_sentiment(symbol, currencyName):
+import praw
+import vaderSentiment
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from nltk import tokenize
+import string
+
+
+analyzer = vaderSentiment.vaderSentiment.SentimentIntensityAnalyzer()
+
+def get_sentiment_from_paragraph(paragraph):
+    sentence_list = tokenize.sent_tokenize(paragraph)
+    paragraphSentiments = 0.0
+    for sentence in sentence_list:
+        vs = analyzer.polarity_scores(sentence)
+        paragraphSentiments += vs["compound"]
+    return round(paragraphSentiments/len(sentence_list), 4)
+
+
+def get_comments_and_sentiment(currencyName):
     dict={}
     reddit = praw.Reddit(client_id='sfpMCd0p-8E-xA',
                          client_secret='T91GhX21FeIdEnQezFMpSkTDCVI',
@@ -23,22 +41,30 @@ def get_comments_and_sentiment(symbol, currencyName):
                          user_agent='testscript by /user/shlomi1/fakebot2',
                          username='shlomioved123')
     subreddit = reddit.subreddit(currencyName)
-    for submission in subreddit.top(limit=100):
+    for submission in subreddit.new(limit=5):
         submission.comments.replace_more(limit=0)
-            comment_queue = submission.comments[:]
-            while comment_queue:
-                comment = comment_queue.pop(0)
-                exclude = set(string.punctuation)
-                comment.body = ''.join(ch for ch in comment.body if ch not in exclude)
-                comment.body = ''.join([c for c in comment.body if ord(c)<65535])
+        comment_queue = submission.comments[:]
+        while comment_queue:
+            comment = comment_queue.pop(0)
+            exclude = set(string.punctuation)
+            comment.body = ''.join(ch for ch in comment.body if ch not in exclude)
+            comment.body = ''.join([c for c in comment.body if ord(c)<65535])
+            if (str(datetime.datetime.fromtimestamp(comment.created))[0:10] in dict):
                 dict[str(datetime.datetime.fromtimestamp(comment.created))[0:10]].append(comment.body)
-                comment_queue.extend(comment.replies)
-    print(dict)
+            else:
+                dict[str(datetime.datetime.fromtimestamp(comment.created))[0:10]]=[]
+                dict[str(datetime.datetime.fromtimestamp(comment.created))[0:10]].append(comment.body)
+            comment_queue.extend(comment.replies)
+    for key, value in dict.items():
+        value = ','.join(value)
+        dict[key]=get_sentiment_from_paragraph(value)
+    return dict
 '''
+
 def prices_for_graph(symbol, limit, aggregate):
     r= requests.get('https://min-api.cryptocompare.com/data/histoday?fsym='+ str(symbol) + '&tsym=USD&limit=' +str(limit) + '&aggregate='+ str(aggregate)+ '&e=CCCAGG')
     d = r.json()
-    dict = {}
+    dict = collections.OrderedDict()
     listOfData = d["Data"]
     for item in listOfData:
         date = datetime.datetime.fromtimestamp(int(item["time"])).strftime('%Y-%m-%d')
@@ -50,29 +76,23 @@ def turn_prices_to_graph(symbol, limit, aggregate, filename):
     d = prices_for_graph(symbol, limit, aggregate)
     days = []
     prices=[]
+    x = [1, 25, 45, 65, 90]
     counter=1
     for key, value in d.items():
-        days.append(counter)
+        days.append(key)
         prices.append(value)
         counter+=1
+    x = np.array(x)
+    days=[days[0], days[25], days[45], days[65], days[90]]
+    plt.xticks(x, days)
     plt.plot(prices)
+    plt.title(symbol)
     plt.xlabel('Days')
     plt.ylabel('Prices')
     plt.savefig(filename)
+    plt.clf()
 
 
-'''
-def get_prices(symbols, namesOfCurrency):
-    tempsymbols = ','.join(symbols)
-    r = requests.get('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+ tempsymbols + '&tsyms=USD')
-    tmp= r.json()
-    results = collections.OrderedDict()
-    i=0
-    for symbol in symbols:
-        results[namesOfCurrency[i]]=[symbol, tmp['DISPLAY'][str(symbol)]['USD']['PRICE'],tmp['DISPLAY'][str(symbol)]['USD']['CHANGEPCTDAY'], tmp['DISPLAY'][str(symbol)]['USD']['MKTCAP']]
-        i+=1
-    return(list(results.items()))
-'''
 
 def get_prices(symbols, namesOfCurrency):
     tempsymbols = ','.join(symbols)
@@ -91,8 +111,11 @@ def get_prices(symbols, namesOfCurrency):
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/index/', methods=['GET', 'POST'])
 def index():
-    results= get_prices(['BTC', 'ETH', 'LTC', 'ETC', 'BCC', 'ZEC', 'XRP', 'NEO', 'DASH', 'IOTA', 'EOS', 'XCP', 'NEOS', 'XMR', 'LSK', 'GNT', 'WAVES', 'SNT', 'STRAT', 'VTC', 'XVG', 'DOGE', 'SC', 'ADA', 'SBD', 'BTS', 'GAS', 'REP', 'FCT', 'XLM', 'XEM', 'STEEM', 'PIVX', 'STORJ', 'DCR', 'XZC', 'SYS', 'MAID', 'LBC', 'OK'], ['Bitcoin', 'Ethereum', 'Litecoin', 'Ethereum Classic', 'Bitcoin Cash', 'Zcash' ,'Ripple', 'Neo', 'Dash', 'IOTA', 'EOS', 'Counterparty', 'Neoscoin', 'Monero', 'Lisk', 'Golem', 'Waves', 'Status','Stratis', 'Vertcoin', 'Verge', 'Dogecoin', 'Siacoin', 'Cardano', 'Steem Dollars', 'Bitshares', 'Gas', 'Augur', 'Factom', 'Stellar Lumens', 'Nem', 'Steem', 'Pivx', 'Storj', 'Decred', 'ZCoin', 'Syscoin', 'MaidSafeCoin', 'LBRY Credits', 'OKCash'])
-    return render_template('index.html', results=results.items())
+    results= get_prices(['BTC', 'ETH', 'LTC', 'ETC', 'BCC', 'ZEC', 'XRP', 'NEO', 'DASH', 'IOTA', 'EOS', 'XCP', 'NEOS', 'XMR', 'LSK', 'GNT', 'WAVES', 'SNT', 'STRAT', 'VTC', 'XVG', 'DOGE', 'SC', 'ADA', 'SBD', 'BTS', 'GAS', 'REP', 'FCT', 'XLM', 'XEM', 'STEEM', 'PIVX', 'STORJ', 'DCR', 'XZC', 'SYS', 'MAID', 'LBC', 'OK', 'BNT'], ['Bitcoin', 'Ethereum', 'Litecoin', 'Ethereum Classic', 'Bitcoin Cash', 'Zcash' ,'Ripple', 'Neo', 'Dash', 'IOTA', 'EOS', 'Counterparty', 'Neoscoin', 'Monero', 'Lisk', 'Golem', 'Waves', 'Status','Stratis', 'Vertcoin', 'Verge', 'Dogecoin', 'Siacoin', 'Cardano', 'Steem Dollars', 'Bitshares', 'Gas', 'Augur', 'Factom', 'Stellar Lumens', 'Nem', 'Steem', 'Pivx', 'Storj', 'Decred', 'ZCoin', 'Syscoin', 'MaidSafeCoin', 'LBRY Credits', 'OKCash', 'Bancor Network'])
+    #sentiment=collections.OrderedDict()
+    #for key,value in results.items():
+    #    sentiment[key]=get_comments_and_sentiment(key)
+    return render_template('index.html', results=results.items())#, sentiment=sentiment.items())
 
 
 @app.route('/about')
@@ -132,7 +155,7 @@ def bitcoin():
 @app.route('/Ethereum/', methods=['GET', 'POST'])
 def ethereum():
     results= get_prices(['ETH'],['Ethereum'])
-    turn_prices_to_graph('ETH', 90, 1,'app/static/Ethereum.png')
+    turn_prices_to_graph('ETH', 90, 1,'app/static/ethereum.png')
     return render_template('ethereum.html', results = results.items())
 
 
@@ -142,7 +165,7 @@ def ethereum():
 @app.route('/Ethereum Classic/', methods=['GET', 'POST'])
 def ethereum_classic():
     results= get_prices(['ETC'],['Ethereum Classic'])
-    turn_prices_to_graph('ETC', 90, 1,'app/static/Ethereum_Classic.png')
+    turn_prices_to_graph('ETC', 90, 1,'app/static/ethereum_classic.png')
     return render_template('ethereum_classic.html', results = results.items())
 
 @app.route('/index/Litecoin', methods=['GET', 'POST'])
@@ -169,7 +192,7 @@ def bitcoin_cash():
 @app.route('/Zcash/', methods=['GET', 'POST'])
 def zcash():
     results= get_prices(['ZEC'],['Zcash'])
-    turn_prices_to_graph('ZEC', 90, 1,'app/static/Zcash.png')
+    turn_prices_to_graph('ZEC', 90, 1,'app/static/zcash.png')
     return render_template('zcash.html', results = results.items())
 
 @app.route('/index/Ripple', methods=['GET', 'POST'])
@@ -468,7 +491,7 @@ def maidsafecoin():
 def lbry_credits():
     results= get_prices(['LBC'],['LBRY Credits'])
     turn_prices_to_graph('LBC', 90, 1,'app/static/lbc_credits.png')
-    return render_template('lbc_credits.html', results = results.items())
+    return render_template('lbry_credits.html', results = results.items())
     
 @app.route('/index/OKCash', methods=['GET', 'POST'])
 @app.route('/index/OKCash/', methods=['GET', 'POST'])
@@ -479,16 +502,35 @@ def okcash():
     turn_prices_to_graph('OK', 90, 1,'app/static/okcash.png')
     return render_template('okcash.html', results = results.items())
 
+@app.route('/index/Bancor Network', methods=['GET', 'POST'])
+@app.route('/index/Bancor Network/', methods=['GET', 'POST'])
+@app.route('/Bancor Network', methods=['GET', 'POST'])
+@app.route('/Bancor Network/', methods=['GET', 'POST'])
+def bancor_network_token():
+    results= get_prices(['BNT'],['Bancor Network'])
+    turn_prices_to_graph('BNT', 90, 1,'app/static/bancornetworktoken.png')
+    return render_template('bancornetworktoken.html', results = results.items())
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    tickers = ['BTC', 'ETH', 'LTC', 'ETC', 'BCC', 'ZEC', 'XRP', 'NEO', 'DASH', 'IOTA', 'EOS', 'XCP', 'NEOS', 'XMR', 'LSK', 'GNT', 'WAVES', 'SNT', 'STRAT', 'VTC', 'XVG', 'DOGE', 'SC', 'ADA', 'SBD', 'BTS', 'GAS', 'REP', 'FCT', 'XLM', 'XEM', 'STEEM', 'PIVX', 'STORJ', 'DCR', 'XZC', 'SYS', 'MAID', 'LBC', 'OK', 'BNT']
+    namesOfCurrency = ['Bitcoin', 'Ethereum', 'Litecoin', 'Ethereum Classic', 'Bitcoin Cash', 'Zcash' ,'Ripple', 'Neo', 'Dash', 'IOTA', 'EOS', 'Counterparty', 'Neoscoin', 'Monero', 'Lisk', 'Golem', 'Waves', 'Status','Stratis', 'Vertcoin', 'Verge', 'Dogecoin', 'Siacoin', 'Cardano', 'Steem Dollars', 'Bitshares', 'Gas', 'Augur', 'Factom', 'Stellar Lumens', 'Nem', 'Steem', 'Pivx', 'Storj', 'Decred', 'ZCoin', 'Syscoin', 'MaidSafeCoin', 'LBRY Credits', 'OKCash', 'Bancor Network']
+    searchQuery = request.form['search']
+    res=[]
+    resd={}
+    for ticker in tickers:
+        if searchQuery.lower() == ticker.lower():
+            res.append(ticker)
+            index = tickers.index(ticker)
+            resd[namesOfCurrency[index]]= ticker
+    for name in namesOfCurrency:
+        if searchQuery.lower() == name.lower():
+            res.append(name)
+            index = namesOfCurrency.index(name)
+            resd[name]= tickers[index]
+    return render_template("search_results.html", results= resd.items())
 
 
-
-
-'''
-@app.route('/static/bitcoin.png/')
-def bitcoin_graph():
-    img = plt.savefig('app/static/bitcoin.png')
-    return send_file(img, mimetype='image/png')
-'''
 
 
 

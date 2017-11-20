@@ -36,6 +36,10 @@
     .redtext{
         color: red;
     }
+    td img {
+        max-width:100%;
+        height:auto;
+    }
     </style>
     
     <head>
@@ -47,7 +51,7 @@
     </head>
     <body style="background-color: #C0C0C0";>
         
-        <form action="" method="POST" name="search">
+        <form action="/search" method="POST" name="search">
             <br>
             <input type="text" name="search" placeholder="Search CryptoCurrency..">
                 <input type="submit" value="Submit">
@@ -87,7 +91,7 @@
             </tr>
             </tr>
             <td>
-                <img src="{{url_for('static', filename='bitcoin.png')}} alt="Image Placeholder" height="1000"/>
+                <img src="{{url_for('static', filename='stratis.png')}}" alt="Image Placeholder" height="200"/>
                     </td>
                     </tr>
                     
