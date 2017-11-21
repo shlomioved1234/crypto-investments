@@ -11,7 +11,6 @@
             border-radius: 4px;
             font-size: 16px;
             background-color: white;
-            background-image: url('searchicon.png');
             background-position: 10px 10px;
             background-repeat: no-repeat;
             padding: 12px 12px 12px 12px;
@@ -83,19 +82,63 @@
         <table align= "center", style="width:80%">
             <tr>
                 <td>
-                    Graph of {{key}} Prices (3 Months)
+                    Graph of {{key}} Prices (7 Days)
                 </td>
                 <td>
-                    Graph of {{key}} Sentiment (3 Months)
+                    Graph of {{key}} Sentiment (7 Days)
                 </td>
             </tr>
-            </tr>
-            <td>
-                <img src="{{url_for('static', filename='neo.png')}}" alt="Image Placeholder" height="200"/>
-                    </td>
-                    </tr>
+            <tr>
+                <td>
+                    <img src="{{url_for('static', filename = 'neo_7.png')}}" alt="Image Placeholder" height="200"/>
                     
-                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Graph of {{key}} Prices (30 Days)
+                </td>
+                <td>
+                    Graph of {{key}} Sentiment (30 Days)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="{{url_for('static', filename = 'neo_30.png')}}" alt="Image Placeholder" height="200"/>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Graph of {{key}} Prices (60 Days)
+                </td>
+                <td>
+                    Graph of {{key}} Sentiment (60 Days)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="{{url_for('static', filename = 'neo_60.png')}}" alt="Image Placeholder" height="200"/>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Graph of {{key}} Prices (90 Days)
+                </td>
+                <td>
+                    Graph of {{key}} Sentiment (90 Days)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="{{url_for('static', filename = 'neo_90.png')}}" alt="Image Placeholder" height="200"/>
+                    
+                </td>
+            </tr>
+            
+        </table>
+
                     {% endfor %}
                     <p align="center">CryptoInvestments: <a href="/index">Home</a> <a href="/about">About Us</a> <a href="/mission">Our Mission</a> <a href="/contact">Contact Us</a> <a href="/careers">Careers</a> </p>
                     {% endblock %}
