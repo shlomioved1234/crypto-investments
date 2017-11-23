@@ -10,7 +10,7 @@ import time
 import collections
 from io import StringIO
 import matplotlib.pyplot as plt
-from flask import Flask, make_response, send_file, render_template, url_for, request
+from flask import Flask, make_response, send_file, render_template, url_for, request, flash, redirect
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import numpy as np
@@ -674,7 +674,24 @@ def search():
     return render_template("search_results.html", results= resd.items())
 
 
-
+@app.route('/application', methods=['GET', 'POST'])
+def application():
+    d = collections.OrderedDict()
+    fname = request.form['fname']
+    lname = request.form['lname']
+    resume = request.form['resume']
+    linkedin = request.form['linkedin']
+    email = request.form['email']
+    phone = request.form['phone']
+    d['First Name']=fname
+    d['Last Name']=lname
+    d['Resume']=resume
+    d['Linkedin']=linkedin
+    d['Email']=email
+    d['Phone']=phone
+    filename = codecs.open('app/static/'+ fname + '_' + lname + '.txt', 'w')
+    print >> filename, d
+    return redirect(url_for("careers"))
 
 
 
