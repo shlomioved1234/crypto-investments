@@ -14,6 +14,7 @@ from flask import Flask, make_response, send_file, render_template, url_for, req
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import numpy as np
+import fnmatch
 
 
 '''
@@ -655,18 +656,21 @@ def search():
     tickers = ['BTC', 'ETH', 'LTC', 'ETC', 'BCC', 'ZEC', 'XRP', 'NEO', 'DASH', 'IOTA', 'EOS', 'XCP', 'NEOS', 'XMR', 'LSK', 'GNT', 'WAVES', 'SNT', 'STRAT', 'VTC', 'XVG', 'DOGE', 'SC', 'ADA', 'SBD', 'BTS', 'GAS', 'REP', 'FCT', 'XLM', 'XEM', 'STEEM', 'PIVX', 'STORJ', 'DCR', 'XZC', 'SYS', 'MAID', 'LBC', 'OK', 'BNT']
     namesOfCurrency = ['Bitcoin', 'Ethereum', 'Litecoin', 'Ethereum Classic', 'Bitcoin Cash', 'Zcash' ,'Ripple', 'Neo', 'Dash', 'IOTA', 'EOS', 'Counterparty', 'Neoscoin', 'Monero', 'Lisk', 'Golem', 'Waves', 'Status','Stratis', 'Vertcoin', 'Verge', 'Dogecoin', 'Siacoin', 'Cardano', 'Steem Dollars', 'Bitshares', 'Gas', 'Augur', 'Factom', 'Stellar Lumens', 'Nem', 'Steem', 'Pivx', 'Storj', 'Decred', 'ZCoin', 'Syscoin', 'MaidSafeCoin', 'LBRY Credits', 'OKCash', 'Bancor Network']
     searchQuery = request.form['search']
-    res=[]
+    pattern = searchQuery.lower()
+    pattern += '*'
+    tickers_temp=[]
+    namesOfCurrency_temp=[]
     resd={}
-    for ticker in tickers:
-        if searchQuery.lower() == ticker.lower():
-            res.append(ticker)
-            index = tickers.index(ticker)
-            resd[namesOfCurrency[index]]= ticker
-    for name in namesOfCurrency:
-        if searchQuery.lower() == name.lower():
-            res.append(name)
-            index = namesOfCurrency.index(name)
-            resd[name]= tickers[index]
+    for i in range(len(tickers)):
+        tickers_temp.append(tickers[i].lower())
+    for i in range(len(namesOfCurrency)):
+        namesOfCurrency_temp.append(namesOfCurrency[i].lower())
+
+    matching = fnmatch.filter(namesOfCurrency_temp, pattern)
+    matching2 = fnmatch.filter(tickers_temp, pattern)
+    for item in matching:
+        index = namesOfCurrency_temp.index(item)
+        resd[namesOfCurrency[index]]=tickers[index]
     return render_template("search_results.html", results= resd.items())
 
 
