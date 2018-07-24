@@ -17,52 +17,14 @@ import numpy as np
 import fnmatch
 
 
-'''
-import praw
-import vaderSentiment
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from nltk import tokenize
-import string
 
 
-analyzer = vaderSentiment.vaderSentiment.SentimentIntensityAnalyzer()
-
-def get_sentiment_from_paragraph(paragraph):
-    sentence_list = tokenize.sent_tokenize(paragraph)
-    paragraphSentiments = 0.0
-    for sentence in sentence_list:
-        vs = analyzer.polarity_scores(sentence)
-        paragraphSentiments += vs["compound"]
-    return round(paragraphSentiments/len(sentence_list), 4)
 
 
-def get_comments_and_sentiment(currencyName):
-    dict={}
-    reddit = praw.Reddit(client_id='sfpMCd0p-8E-xA',
-                         client_secret='T91GhX21FeIdEnQezFMpSkTDCVI',
-                         password='insulinpump',
-                         user_agent='testscript by /user/shlomi1/fakebot2',
-                         username='shlomioved123')
-    subreddit = reddit.subreddit(currencyName)
-    for submission in subreddit.new(limit=5):
-        submission.comments.replace_more(limit=0)
-        comment_queue = submission.comments[:]
-        while comment_queue:
-            comment = comment_queue.pop(0)
-            exclude = set(string.punctuation)
-            comment.body = ''.join(ch for ch in comment.body if ch not in exclude)
-            comment.body = ''.join([c for c in comment.body if ord(c)<65535])
-            if (str(datetime.datetime.fromtimestamp(comment.created))[0:10] in dict):
-                dict[str(datetime.datetime.fromtimestamp(comment.created))[0:10]].append(comment.body)
-            else:
-                dict[str(datetime.datetime.fromtimestamp(comment.created))[0:10]]=[]
-                dict[str(datetime.datetime.fromtimestamp(comment.created))[0:10]].append(comment.body)
-            comment_queue.extend(comment.replies)
-    for key, value in dict.items():
-        value = ','.join(value)
-        dict[key]=get_sentiment_from_paragraph(value)
-    return dict
-'''
+
+
+                         
+        
 
 def prices_for_graph(symbol, limit, aggregate):
     r= requests.get('https://min-api.cryptocompare.com/data/histoday?fsym='+ str(symbol) + '&tsym=USD&limit=' +str(limit) + '&aggregate='+ str(aggregate)+ '&e=CCCAGG')
