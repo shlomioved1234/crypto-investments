@@ -39,7 +39,7 @@ sqlparse==0.2.3
 Tempita==0.5.2
 textblob==0.13.0
 update-checker==0.16
-urllib3==1.22
+urllib3==1.26.5
 Werkzeug==0.12.2
 Whoosh==2.7.4
 WTForms==2.1
